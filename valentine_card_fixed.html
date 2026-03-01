@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>С Днем Святого Валентина!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Georgia, serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            overflow-x: hidden;
+            position: relative;
+            padding: 5px;
+            margin: 0;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding: 10px;
+        }
+
+        .card-section, .game-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 25px;
+            position: relative;
+            z-index: 10;
+            animation: fadeIn 1s ease-in;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .heart {
+            color: #e74c3c;
+            font-size: 40px;
+            animation: heartbeat 1.5s ease-in-out infinite;
+            margin: 15px 0;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 2em;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .message {
+            color: #34495e;
+            font-size: 1.1em;
+            line-height: 1.5;
+            margin: 15px 0;
+            font-style: italic;
+        }
+
+        .button {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        .button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
+        }
+
+        .floating-hearts {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .heart-float {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.7);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .surprise {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: linear-gradient(45deg, #ff9ff3, #feca57);
+            border-radius: 15px;
+            color: white;
+            font-size: 1em;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .photo-frame {
+            width: 150px;
+            height: 150px;
+            border: 4px solid #e74c3c;
+            border-radius: 50%;
+            margin: 15px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(45deg, #ff9ff3, #feca57);
+            font-size: 60px;
+            color: white;
+        }
+
+        /* Стили для новой игры */
+        .game-area {
+            width: 100%;
+            max-width: 500px;
+            height: 400px;
+            background: linear-gradient(180deg, #FFB6C1 0%, #FFC0CB 100%);
+            border: 3px solid #e74c3c;
+            border-radius: 20px;
+            margin: 15px auto;
+            position: relative;
+            overflow: hidden;
+            cursor: crosshair;
+            touch-action: none;
+            box-shadow: inset 0 2px 20px rgba(231, 76, 60, 0.2);
+        }
+
+        .target-heart {
+            position: absolute;
+            font-size: 40px;
+            cursor: pointer;
+            animation: heartbeat 0.8s ease-in-out infinite;
+            transition: all 0.2s ease;
+            filter: drop-shadow(0 2px 8px rgba(231, 76, 60, 0.4));
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .target-heart:hover {
+            transform: scale(1.2);
+            filter: drop-shadow(0 4px 12px rgba(231, 76, 60, 0.6));
+        }
+
+        .target-heart.clicked {
+            animation: explode 0.3s ease-out forwards;
+        }
+
+        @keyframes explode {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.5);
+            }
+            100% {
+                transform: scale(0);
+                opacity: 0;
+            }
+        }
+
+        .combo-text {
+            position: absolute;
+            font-size: 24px;
+            font-weight: bold;
+            color: #FFD700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            animation: comboFloat 1s ease-out forwards;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        @keyframes comboFloat {
+            0% {
+                transform: translateY(0) scale(0.5);
+                opacity: 0;
+            }
+            50% {
+                transform: translateY(-20px) scale(1.2);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-50px) scale(1);
+                opacity: 0;
+            }
+        }
+
+        .score-popup {
+            position: absolute;
+            font-size: 20px;
+            font-weight: bold;
+            color: #2ecc71;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            animation: scoreFloat 0.8s ease-out forwards;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        @keyframes scoreFloat {
+            0% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-30px);
+                opacity: 0;
+            }
+        }
+
+        /* Стили для конверта и письма */
+        .envelope-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+        }
+
+        .envelope {
+            width: 300px;
+            height: 200px;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            border-radius: 10px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(231, 76, 60, 0.3);
+        }
+
+        .envelope:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(231, 76, 60, 0.4);
+        }
+
+        .envelope-flap {
+            width: 0;
+            height: 0;
+            border-left: 150px solid transparent;
+            border-right: 150px solid transparent;
+            border-top: 100px solid #c0392b;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform-origin: top;
+            transition: transform 0.8s ease;
+        }
+
+        .envelope.opened .envelope-flap {
+            transform: rotateX(180deg);
+        }
+
+        .envelope-body {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .envelope-text {
+            color: white;
+            font-size: 1.2em;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .letter {
+            width: 320px;
+            max-width: 90%;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            transform: scale(0);
+            opacity: 0;
+            transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .letter.show {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .letter-content {
+            text-align: center;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            body {
+                padding: 2px;
+            }
+            
+            .main-container {
+                padding: 5px;
+                gap: 10px;
+            }
+            
+            .card-section, .game-section {
+                padding: 20px;
+                border-radius: 15px;
+            }
+            
+            .game-area {
+                height: 300px;
+                max-width: 350px;
+                border-width: 2px;
+            }
+            
+            .target-heart {
+                font-size: 35px;
+            }
+            
+            .envelope {
+                width: 250px;
+                height: 170px;
+            }
+            
+            .envelope-flap {
+                border-left-width: 125px;
+                border-right-width: 125px;
+                border-top-width: 85px;
+            }
+            
+            .letter {
+                width: 280px;
+                padding: 25px;
+            }
+            
+            h1 {
+                font-size: 1.4em;
+                margin-bottom: 10px;
+            }
+            
+            .photo-frame {
+                width: 100px;
+                height: 100px;
+                font-size: 40px;
+                border-width: 3px;
+            }
+            
+            .message {
+                font-size: 1em;
+                line-height: 1.4;
+            }
+            
+            .button {
+                padding: 10px 20px;
+                font-size: 0.9em;
+                margin: 8px 3px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 1px;
+            }
+            
+            .main-container {
+                padding: 3px;
+                gap: 8px;
+            }
+            
+            .card-section, .game-section {
+                padding: 15px;
+                border-radius: 12px;
+            }
+            
+            .game-area {
+                height: 250px;
+                max-width: 280px;
+                border-width: 2px;
+                margin: 10px auto;
+            }
+            
+            .target-heart {
+                font-size: 30px;
+            }
+            
+            .envelope {
+                width: 220px;
+                height: 150px;
+            }
+            
+            .envelope-flap {
+                border-left-width: 110px;
+                border-right-width: 110px;
+                border-top-width: 75px;
+            }
+            
+            .letter {
+                width: 250px;
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.2em;
+                margin-bottom: 8px;
+            }
+            
+            .photo-frame {
+                width: 80px;
+                height: 80px;
+                font-size: 35px;
+                border-width: 2px;
+            }
+            
+            .message {
+                font-size: 0.9em;
+                line-height: 1.3;
+            }
+            
+            .button {
+                padding: 8px 16px;
+                font-size: 0.85em;
+                margin: 6px 2px;
+            }
+            
+            .game-stats {
+                margin: 15px 0;
+            }
+            
+            .stat-item {
+                padding: 8px 15px;
+                font-size: 0.9em;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .game-area {
+                height: 220px;
+                max-width: 250px;
+            }
+            
+            .target-heart {
+                font-size: 25px;
+            }
+            
+            .envelope {
+                width: 200px;
+                height: 130px;
+            }
+            
+            .envelope-flap {
+                border-left-width: 100px;
+                border-right-width: 100px;
+                border-top-width: 65px;
+            }
+            
+            .letter {
+                width: 220px;
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 1.1em;
+            }
+            
+            .photo-frame {
+                width: 70px;
+                height: 70px;
+                font-size: 30px;
+            }
+        }
+
+        .game-container {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .game-stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .game-message {
+            font-size: 1.2em;
+            color: #e74c3c;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-hearts" id="heartsContainer"></div>
+    
+    <div class="main-container">
+        <!-- Секция с игрой -->
+        <div class="game-section">
+            <div class="game-container">
+                <h1>💘 Сердечный Блиц 💘</h1>
+                <div class="game-message" id="gameMessage">Кликай по сердечкам как можно быстрее!</div>
+                
+                <div class="game-stats">
+                    <div class="stat-item">Очки: <span id="score">0</span></div>
+                    <div class="stat-item">Время: <span id="timer">30</span>с</div>
+                    <div class="stat-item">Комбо: <span id="combo">0</span>x</div>
+                </div>
+                
+                <div class="game-area" id="gameArea">
+                    <!-- Сердечки будут появляться здесь -->
+                </div>
+                
+                <button class="button" onclick="initGame()">🚀 Начать игру!</button>
+            </div>
+        </div>
+
+        <!-- Секция с поздравлением (скрыта сначала) -->
+        <div class="card-section" id="cardSection" style="display: none;">
+            <div class="envelope-container">
+                <div class="envelope" id="envelope" onclick="openLetter()">
+                    <div class="envelope-flap"></div>
+                    <div class="envelope-body">
+                        <div class="envelope-text">💌 Открой меня!</div>
+                    </div>
+                </div>
+                
+                <div class="letter" id="letter" style="display: none;">
+                    <div class="letter-content">
+                        <div class="heart">❤️</div>
+                        <h1 id="congratsTitle">Ты - моя Вселенная!</h1>
+                        
+                        <div class="photo-frame">💑</div>
+                        
+                        <div class="message" id="congratsMessage">
+                            Знаешь, есть моменты, когда я смотрю на тебя и понимаю,<br>
+                            что всё остальное - просто шум. Твоя улыбка освещает мои дни,<br>
+                            твой смех - музыка для моей души, а твоё объятие - дом.<br><br>
+                            
+                            Ты не просто девушка, которую я люблю.<br>
+                            Ты - мой компас в этом хаотичном мире,<br>
+                            моя тихая гавань в буре,<br>
+                            мой самый большой источник вдохновения.<br><br>
+                            
+                            Каждый день с тобой - это как открытие новой главы<br>
+                            в самой красивой книге, которую я когда-либо читал.<br>
+                            И я хочу, чтобы эта книга никогда не заканчивалась.<br><br>
+                            
+                            Спасибо, что ты есть. Спасибо за то, что ты - ты.<br>
+                            Я люблю тебя больше, чем могут выразить слова.<br>
+                            Ты - самое лучшее, что со мной случилось.
+                        </div>
+                        
+                        <button class="button" onclick="createMoreHearts()">💕 Больше сердец!</button>
+                        <button class="button" onclick="scrollToGame()">🎮 Сыграть еще раз!</button>
+                        
+                        <div class="surprise" id="surprise" style="display: block;">
+                            🌟 Ты делаешь мою жизнь осмысленной и прекрасной! 🌟
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Игровые переменные для новой игры "Сердечный Блиц"
+        let score = 0;
+        let timeLeft = 30;
+        let combo = 0;
+        let gameTimer = null;
+        let spawnTimer = null;
+        let gameActive = false;
+        let hearts = [];
+        let lastClickTime = 0;
+
+        // Типы сердечек
+        const heartTypes = [
+            { emoji: '❤️', points: 10, weight: 50 },
+            { emoji: '💕', points: 15, weight: 30 },
+            { emoji: '💖', points: 25, weight: 15 },
+            { emoji: '💘', points: 50, weight: 5 }
+        ];
+
+        // Массив с 10 вариантами поздравлений (без опечаток)
+        const congratulations = [
+            {
+                title: "Ты - мое солнце!",
+                text: "Ты освещаешь мой мир даже в самые темные дни. Твоя улыбка согревает мою душу, а твое присутствие делает жизнь осмысленной. Спасибо, что ты есть!"
+            },
+            {
+                title: "Моя радость!",
+                text: "Каждый день с тобой - это праздник. Ты делаешь обычные моменты невероятными, а серые дни - яркими. Я люблю тебя больше всех звезд на небе!"
+            },
+            {
+                title: "Ты - моя вселенная!",
+                text: "В твоих глазах я вижу целую вселенную. Твоя любовь - это гравитация, что держит меня на земле. Ты - мой дом, моя крепость, мое все!"
+            },
+            {
+                title: "Сердце принадлежит тебе!",
+                text: "Мое сердце бьется в ритме твоего имени. Каждая клетка моего тела кричит о любви к тебе. Ты - самый прекрасный человек в этом мире!"
+            },
+            {
+                title: "Ты - моя мечта!",
+                text: "Я всегда мечтал о ком-то вроде тебя, но даже не представлял, что реальность может быть лучше мечты. Ты - чудо, которое случилось со мной!"
+            },
+            {
+                title: "Мой ангел-хранитель!",
+                text: "Ты оберегаешь меня от всех невзгод и даришь силу для новых свершений. С тобой я чувствую себя непобедимым. Спасибо за твою любовь!"
+            },
+            {
+                title: "Ты - моя песня!",
+                text: "Твой голос - мелодия моей души. Твой смех - лучший трек в моем плейлисте. Я готов слушать тебя вечно и никогда не уставать!"
+            },
+            {
+                title: "Моё сокровище!",
+                text: "Ты дороже всех сокровищ мира. Твоя любовь - самый ценный дар, который у меня есть. Я буду беречь тебя до конца моих дней!"
+            },
+            {
+                title: "Ты - моя гавань!",
+                text: "В этом хаотичном мире ты моя тихая гавань. С тобой я чувствую себя в безопасности и покое. Ты - мой дом!"
+            },
+            {
+                title: "Моя вдохновительница!",
+                text: "Ты вдохновляешь меня быть лучше каждый день. Ради тебя я готов свернуть горы и переплыть океаны. Ты - моя муза!"
+            }
+        ];
+
+        // Создаем плавающие сердца
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart-float';
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + '%';
+            heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+            heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
+            heart.style.animationDelay = Math.random() * 2 + 's';
+            
+            document.getElementById('heartsContainer').appendChild(heart);
+            
+            setTimeout(() => {
+                heart.remove();
+            }, 6000);
+        }
+
+        // Создаем много сердец
+        function createMoreHearts() {
+            for (let i = 0; i < 10; i++) {
+                setTimeout(() => createHeart(), i * 100);
+            }
+        }
+
+        // Прокрутка к игре
+        function scrollToGame() {
+            document.querySelector('.game-section').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+            document.getElementById('cardSection').style.display = 'none';
+            document.querySelector('.game-section').style.display = 'block';
+        }
+
+        // Прокрутка к поздравлению
+        function scrollToCard() {
+            document.getElementById('cardSection').style.display = 'block';
+            document.querySelector('.game-section').style.display = 'none';
+            document.getElementById('cardSection').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+        }
+
+        // Открытие письма
+        function openLetter() {
+            const envelope = document.getElementById('envelope');
+            const letter = document.getElementById('letter');
+            
+            envelope.classList.add('opened');
+            setTimeout(() => {
+                envelope.style.display = 'none';
+                letter.style.display = 'block';
+                setTimeout(() => {
+                    letter.classList.add('show');
+                    // Показываем случайное поздравление
+                    showRandomCongratulation();
+                }, 100);
+            }, 800);
+            
+            createMoreHearts();
+        }
+
+        // Показ случайного поздравления
+        function showRandomCongratulation() {
+            const randomIndex = Math.floor(Math.random() * congratulations.length);
+            const congratulation = congratulations[randomIndex];
+            
+            document.getElementById('congratsTitle').textContent = congratulation.title;
+            document.getElementById('congratsMessage').innerHTML = congratulation.text;
+        }
+
+        // Инициализация игры
+        function initGame() {
+            // Сброс переменных
+            score = 0;
+            timeLeft = 30;
+            combo = 0;
+            gameActive = true;
+            hearts = [];
+            
+            // Очистка таймеров
+            if (gameTimer) clearInterval(gameTimer);
+            if (spawnTimer) clearInterval(spawnTimer);
+            
+            // Очистка игрового поля
+            const gameArea = document.getElementById('gameArea');
+            const existingHearts = gameArea.querySelectorAll('.target-heart');
+            existingHearts.forEach(heart => heart.remove());
+            
+            // Обновление статистики
+            updateStats();
+            
+            // Запуск таймеров
+            startGameTimer();
+            startSpawning();
+            
+            // Обновление сообщения
+            document.getElementById('gameMessage').textContent = 'Кликай по сердечкам как можно быстрее!';
+        }
+
+        // Запуск игрового таймера
+        function startGameTimer() {
+            gameTimer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer').textContent = timeLeft;
+                
+                if (timeLeft <= 0) {
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        // Запуск спавна сердечек
+        function startSpawning() {
+            spawnHeart(); // Первое сердечко сразу
+            
+            spawnTimer = setInterval(() => {
+                if (gameActive) {
+                    spawnHeart();
+                }
+            }, 800); // Быстрый спавн
+        }
+
+        // Создание сердечка для клика
+        function spawnHeart() {
+            if (!gameActive) return;
+            
+            const gameArea = document.getElementById('gameArea');
+            const heart = document.createElement('div');
+            
+            // Выбор типа сердечка
+            const rand = Math.random() * 100;
+            let selectedType;
+            let cumulative = 0;
+            
+            for (const type of heartTypes) {
+                cumulative += type.weight;
+                if (rand <= cumulative) {
+                    selectedType = type;
+                    break;
+                }
+            }
+            
+            heart.className = 'target-heart';
+            heart.innerHTML = selectedType.emoji;
+            heart.dataset.points = selectedType.points;
+            
+            // Случайная позиция
+            const maxX = gameArea.offsetWidth - 50;
+            const maxY = gameArea.offsetHeight - 50;
+            const x = Math.random() * maxX;
+            const y = Math.random() * maxY;
+            
+            heart.style.left = x + 'px';
+            heart.style.top = y + 'px';
+            
+            // Обработчик клика
+            heart.addEventListener('click', (e) => clickHeart(e, heart));
+            
+            gameArea.appendChild(heart);
+            hearts.push(heart);
+            
+            // Автоматическое удаление через время
+            setTimeout(() => {
+                if (heart.parentNode) {
+                    heart.remove();
+                    const index = hearts.indexOf(heart);
+                    if (index > -1) {
+                        hearts.splice(index, 1);
+                    }
+                    // Сброс комбо если пропустил сердечко
+                    if (gameActive) {
+                        combo = 0;
+                        updateStats();
+                    }
+                }
+            }, 2000); // Сердечки исчезают через 2 секунды
+        }
+
+        // Клик по сердечку
+        function clickHeart(event, heart) {
+            if (!gameActive) return;
+            
+            event.stopPropagation();
+            
+            const points = parseInt(heart.dataset.points);
+            const currentTime = Date.now();
+            
+            // Проверка комбо
+            if (currentTime - lastClickTime < 1000) {
+                combo++;
+            } else {
+                combo = 1;
+            }
+            
+            lastClickTime = currentTime;
+            
+            // Начисление очков с учетом комбо
+            const totalPoints = points * Math.max(1, combo);
+            score += totalPoints;
+            
+            // Анимация клика
+            heart.classList.add('clicked');
+            
+            // Показ очков
+            showScorePopup(event.pageX, event.pageY, totalPoints);
+            
+            // Показ комбо
+            if (combo > 1) {
+                showComboText(event.pageX, event.pageY, combo);
+            }
+            
+            // Удаление сердечка
+            setTimeout(() => {
+                heart.remove();
+                const index = hearts.indexOf(heart);
+                if (index > -1) {
+                    hearts.splice(index, 1);
+                }
+            }, 300);
+            
+            updateStats();
+        }
+
+        // Показ всплывающих очков
+        function showScorePopup(x, y, points) {
+            const popup = document.createElement('div');
+            popup.className = 'score-popup';
+            popup.innerHTML = `+${points}`;
+            popup.style.left = x + 'px';
+            popup.style.top = y + 'px';
+            
+            document.body.appendChild(popup);
+            
+            setTimeout(() => popup.remove(), 800);
+        }
+
+        // Показ текста комбо
+        function showComboText(x, y, comboCount) {
+            const comboDiv = document.createElement('div');
+            comboDiv.className = 'combo-text';
+            comboDiv.innerHTML = `${comboCount}x COMBO!`;
+            comboDiv.style.left = x + 'px';
+            comboDiv.style.top = (y - 30) + 'px';
+            
+            document.body.appendChild(comboDiv);
+            
+            setTimeout(() => comboDiv.remove(), 1000);
+        }
+
+        // Обновление статистики
+        function updateStats() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('combo').textContent = combo;
+        }
+
+        // Завершение игры
+        function endGame() {
+            gameActive = false;
+            clearInterval(gameTimer);
+            clearInterval(spawnTimer);
+            
+            // Удаление всех сердечек
+            hearts.forEach(heart => {
+                if (heart.parentNode) {
+                    heart.remove();
+                }
+            });
+            hearts = [];
+            
+            const message = document.getElementById('gameMessage');
+            message.innerHTML = `🎉 Игра окончена! Ты набрала ${score} очков! 🎉`;
+            
+            createMoreHearts();
+            
+            // Показываем письмо через 2 секунды
+            setTimeout(() => {
+                scrollToCard();
+            }, 2000);
+        }
+
+        // Запускаем сердца при загрузке
+        setInterval(createHeart, 2000);
+        
+        // Создаем начальные сердца
+        for (let i = 0; i < 5; i++) {
+            setTimeout(() => createHeart(), i * 500);
+        }
+
+        // Автоматический запуск игры при загрузке
+        window.onload = () => {
+            initGame();
+        };
+    </script>
+</body>
+</html>
